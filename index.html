@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ficha personal</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+    .contenedor {
+      max-width: 650px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    .tarjeta {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 28px;
+    }
+    .dato {
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .dato:last-child {
+      border-bottom: none;
+    }
+    .etiqueta {
+      font-size: 13px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .valor {
+      font-size: 18px;
+      margin-top: 4px;
+    }
+    .error {
+      background: #fff3f3;
+      color: #9b1c1c;
+      border: 1px solid #ffd0d0;
+      padding: 16px;
+      border-radius: 12px;
+    }
+    .pie {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #777;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <main class="contenedor">
+    <section class="tarjeta" id="app">
+      Cargando ficha...
+    </section>
+    <div class="pie">Sistema simple de fichas por QR</div>
+  </main>
+
+  <script>
+    function obtenerParametro(nombre) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(nombre);
+    }
+
+    function mostrarFicha(persona) {
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <h1>${persona.nombre || 'Ficha personal'}</h1>
+        <div class="dato">
+          <div class="etiqueta">DNI</div>
+          <div class="valor">${persona.dni || '-'}</div>
+        </div>
+        <div class="dato">
+          <div class="etiqueta">Teléfono</div>
+          <div class="valor">${persona.telefono || '-'}</div>
+        </div>
+        <div class="dato">
+          <div class="etiqueta">Sector</div>
+          <div class="valor">${persona.sector || '-'}</div>
+        </div>
+        <div class="dato">
+          <div class="etiqueta">Observación</div>
+          <div class="valor">${persona.observacion || '-'}</div>
+        </div>
+      `;
+    }
+
+    function mostrarError(mensaje) {
+      document.getElementById('app').innerHTML = `<div class="error">${mensaje}</div>`;
+    }
+
+    async function iniciar() {
+      const id = obtenerParametro('id');
+
+      if (!id) {
+        mostrarError('Falta el ID en el link. Ejemplo: index.html?id=12345678');
+        return;
+      }
+
+      try {
+        const respuesta = await fetch('datos.json');
+        const datos = await respuesta.json();
+        const persona = datos.find(p => String(p.id) === String(id));
+
+        if (!persona) {
+          mostrarError('No se encontró una persona con el ID: ' + id);
+          return;
+        }
+
+        mostrarFicha(persona);
+      } catch (error) {
+        mostrarError('No se pudo cargar datos.json. Si abriste el archivo directo desde la PC, probalo con un servidor local o subilo a internet.');
+      }
+    }
+
+    iniciar();
+  </script>
+</body>
+</html>
