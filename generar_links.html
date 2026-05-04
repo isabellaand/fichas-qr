@@ -1,77 +1,86 @@
-<!doctype html>
-<html lang="es">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generar links y QR</title>
+  <meta charset="UTF-8">
+  <title>Generar Links y QR</title>
+
   <style>
-    body { font-family: Arial, sans-serif; background:#f4f6f8; margin:0; color:#222; }
-    .contenedor { max-width: 900px; margin: 35px auto; padding: 20px; }
-    .tarjeta { background:#fff; border-radius:16px; padding:24px; box-shadow:0 8px 24px rgba(0,0,0,.08); }
-    input { width:100%; padding:12px; border:1px solid #ccc; border-radius:10px; font-size:15px; margin:8px 0 20px; }
-    table { width:100%; border-collapse:collapse; }
-    th, td { padding:12px; border-bottom:1px solid #eee; text-align:left; vertical-align:middle; }
-    img { width:90px; height:90px; }
-    a { color:#0b63ce; word-break:break-all; }
-    .nota { color:#666; font-size:14px; }
+    body {
+      font-family: Arial;
+      background: #f0f2f5;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .nombre {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    img {
+      margin-top: 10px;
+    }
+
+    button {
+      margin-top: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
   </style>
 </head>
+
 <body>
-  <main class="contenedor">
-    <section class="tarjeta">
-      <h1>Generador de links y QR</h1>
-      <p class="nota">Primero subí estos archivos a internet. Después pegá acá la URL base donde quedó publicado el proyecto.</p>
-      <label>URL base del sitio</label>
-      <input id="baseUrl" placeholder="Ej: https://usuario.github.io/fichas_qr/" />
-      <table>
-        <thead>
-          <tr>
-            <th>Persona</th>
-            <th>Link</th>
-            <th>QR</th>
-          </tr>
-        </thead>
-        <tbody id="tabla"></tbody>
-      </table>
-    </section>
-  </main>
 
-  <script>
-    const input = document.getElementById('baseUrl');
-    const tabla = document.getElementById('tabla');
+<h2>Generador de Links y QR</h2>
 
-    function normalizarBase(url) {
-      if (!url) return window.location.href.replace('generar_links.html', '');
-      return url.endsWith('/') ? url : url + '/';
-    }
+<div id="contenedor"></div>
 
-    function qrUrl(link) {
-      return 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(link);
-    }
+<script>
+fetch("datos.json")
+  .then(res => res.json())
+  .then(data => {
 
-    async function cargar() {
-      const respuesta = await fetch('datos.json');
-      const personas = await respuesta.json();
-      dibujar(personas);
-      input.addEventListener('input', () => dibujar(personas));
-    }
+    const contenedor = document.getElementById("contenedor");
 
-    function dibujar(personas) {
-      const base = normalizarBase(input.value);
-      tabla.innerHTML = '';
-      personas.forEach(persona => {
-        const link = base + 'index.html?id=' + encodeURIComponent(persona.id);
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${persona.nombre}<br><small>DNI: ${persona.dni}</small></td>
-          <td><a href="${link}" target="_blank">${link}</a></td>
-          <td><img src="${qrUrl(link)}" alt="QR de ${persona.nombre}"></td>
-        `;
-        tabla.appendChild(tr);
-      });
-    }
+    data.forEach(persona => {
 
-    cargar();
-  </script>
+      const link = `https://isabellaand.github.io/fichas-qr/index.html?id=${persona.id}`;
+      const qr = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(link)}`;
+
+      const div = document.createElement("div");
+      div.className = "card";
+
+      div.innerHTML = `
+        <div class="nombre">${persona.nombre}</div>
+        <div>DNI: ${persona.dni}</div>
+        <div>CUIL: ${persona.cuil || "-"}</div>
+        <div>Sector: ${persona.sector || "-"}</div>
+
+        <br>
+        <input type="text" value="${link}" style="width:100%" readonly>
+        <button onclick="copiar('${link}')">Copiar link</button>
+
+        <br>
+        <img src="${qr}">
+      `;
+
+      contenedor.appendChild(div);
+    });
+
+  });
+
+function copiar(texto) {
+  navigator.clipboard.writeText(texto);
+  alert("Link copiado!");
+}
+</script>
+
 </body>
 </html>
