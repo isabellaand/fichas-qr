@@ -1,129 +1,78 @@
-<!doctype html>
-<html lang="es">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ficha personal</title>
+  <meta charset="UTF-8">
+  <title>Ficha</title>
   <style>
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      color: #222;
+      font-family: Arial;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
-    .contenedor {
-      max-width: 650px;
-      margin: 40px auto;
-      padding: 20px;
-    }
-    .tarjeta {
+
+    .card {
       background: white;
-      border-radius: 16px;
-      padding: 28px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    }
-    h1 {
-      margin-top: 0;
-      font-size: 28px;
-    }
-    .dato {
-      padding: 12px 0;
-      border-bottom: 1px solid #eee;
-    }
-    .dato:last-child {
-      border-bottom: none;
-    }
-    .etiqueta {
-      font-size: 13px;
-      color: #666;
-      text-transform: uppercase;
-      letter-spacing: .04em;
-    }
-    .valor {
-      font-size: 18px;
-      margin-top: 4px;
-    }
-    .error {
-      background: #fff3f3;
-      color: #9b1c1c;
-      border: 1px solid #ffd0d0;
-      padding: 16px;
-      border-radius: 12px;
-    }
-    .pie {
-      margin-top: 20px;
-      font-size: 13px;
-      color: #777;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
       text-align: center;
+      width: 300px;
+    }
+
+    .card img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+
+    .nombre {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .dato {
+      margin: 5px 0;
     }
   </style>
 </head>
+
 <body>
-  <main class="contenedor">
-    <section class="tarjeta" id="app">
-      Cargando ficha...
-    </section>
-    <div class="pie">Sistema simple de fichas por QR</div>
-  </main>
 
-  <script>
-    function obtenerParametro(nombre) {
-      const params = new URLSearchParams(window.location.search);
-      return params.get(nombre);
+<div class="card">
+  <img id="foto" src="">
+  <div class="nombre" id="nombre"></div>
+
+  <div class="dato"><b>DNI:</b> <span id="dni"></span></div>
+  <div class="dato"><b>CUIL:</b> <span id="cuil"></span></div>
+  <div class="dato"><b>Teléfono:</b> <span id="telefono"></span></div>
+  <div class="dato"><b>Sector:</b> <span id="sector"></span></div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+fetch("datos.json")
+  .then(res => res.json())
+  .then(data => {
+    const persona = data.find(p => p.id === id);
+
+    if (persona) {
+      document.getElementById("nombre").textContent = persona.nombre;
+      document.getElementById("dni").textContent = persona.dni;
+      document.getElementById("cuil").textContent = persona.cuil || "-";
+      document.getElementById("telefono").textContent = persona.telefono || "-";
+      document.getElementById("sector").textContent = persona.sector || "-";
+      document.getElementById("foto").src = persona.foto || "https://via.placeholder.com/120";
+    } else {
+      document.body.innerHTML = "<h2>No encontrado</h2>";
     }
+  });
+</script>
 
-    function mostrarFicha(persona) {
-      const app = document.getElementById('app');
-      app.innerHTML = `
-        <h1>${persona.nombre || 'Ficha personal'}</h1>
-        <div class="dato">
-          <div class="etiqueta">DNI</div>
-          <div class="valor">${persona.dni || '-'}</div>
-        </div>
-        <div class="dato">
-          <div class="etiqueta">Teléfono</div>
-          <div class="valor">${persona.telefono || '-'}</div>
-        </div>
-        <div class="dato">
-          <div class="etiqueta">Sector</div>
-          <div class="valor">${persona.sector || '-'}</div>
-        </div>
-        <div class="dato">
-          <div class="etiqueta">Observación</div>
-          <div class="valor">${persona.observacion || '-'}</div>
-        </div>
-      `;
-    }
-
-    function mostrarError(mensaje) {
-      document.getElementById('app').innerHTML = `<div class="error">${mensaje}</div>`;
-    }
-
-    async function iniciar() {
-      const id = obtenerParametro('id');
-
-      if (!id) {
-        mostrarError('Falta el ID en el link. Ejemplo: index.html?id=12345678');
-        return;
-      }
-
-      try {
-        const respuesta = await fetch('datos.json');
-        const datos = await respuesta.json();
-        const persona = datos.find(p => String(p.id) === String(id));
-
-        if (!persona) {
-          mostrarError('No se encontró una persona con el ID: ' + id);
-          return;
-        }
-
-        mostrarFicha(persona);
-      } catch (error) {
-        mostrarError('No se pudo cargar datos.json. Si abriste el archivo directo desde la PC, probalo con un servidor local o subilo a internet.');
-      }
-    }
-
-    iniciar();
-  </script>
 </body>
 </html>
