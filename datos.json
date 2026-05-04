@@ -1,8 +1,9 @@
 [
   {
     "id": "12345678",
-    "nombre": "Juan Pérez",
+    "nombre": "Isabella Andriollo",
     "dni": "12345678",
+    "cuil": "12345",
     "telefono": "3411234567",
     "sector": "Administración",
     "observacion": "Ejemplo de ficha"
