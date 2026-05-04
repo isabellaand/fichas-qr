@@ -14,14 +14,3 @@ El ID se busca dentro de datos.json.
 EJEMPLOS:
 index.html?id=12345678
 index.html?id=87654321
-
-IMPORTANTE:
-Para que el QR funcione desde cualquier celular, tenés que subir la carpeta a internet.
-Una opción gratis es GitHub Pages o Netlify.
-
-Si querés probarlo en tu computadora:
-1) Abrí una terminal dentro de la carpeta.
-2) Ejecutá:
-   python -m http.server 8000
-3) Entrá a:
-   http://localhost:8000/index.html?id=12345678
