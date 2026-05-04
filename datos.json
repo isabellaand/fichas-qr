@@ -1,19 +1,11 @@
 [
   {
     "id": "12345678",
-    "nombre": "Isabella Andriollo",
+    "nombre": "Hector Enrique",
     "dni": "12345678",
-    "cuil": "12345",
+    "cuil": "20-12345678-3",
     "telefono": "3411234567",
     "sector": "Administración",
-    "observacion": "Ejemplo de ficha"
-  },
-  {
-    "id": "87654321",
-    "nombre": "María Gómez",
-    "dni": "87654321",
-    "telefono": "3417654321",
-    "sector": "Salud",
-    "observacion": "Segundo ejemplo"
+    "foto": "https://i.pravatar.cc/150?img=3"
   }
 ]
