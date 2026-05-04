@@ -3,54 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>Ficha</title>
-  <style>
-    body {
-      font-family: Arial;
-      background: #f0f2f5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      width: 320px;
-      text-align: center;
-    }
-
-    .nombre {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .dato {
-      margin: 6px 0;
-      text-align: left;
-    }
-  </style>
 </head>
 
 <body>
 
-<div class="card">
-  <div class="nombre" id="nombre"></div>
+<h2 id="nombre"></h2>
 
-  <div class="dato"><b>DNI:</b> <span id="dni"></span></div>
-  <div class="dato"><b>CUIL:</b> <span id="cuil"></span></div>
-  <div class="dato"><b>Teléfono:</b> <span id="telefono"></span></div>
-  <div class="dato"><b>Sector:</b> <span id="sector"></span></div>
-</div>
+<p><b>DNI:</b> <span id="dni"></span></p>
+<p><b>CUIL:</b> <span id="cuil"></span></p>
+<p><b>Teléfono:</b> <span id="telefono"></span></p>
+<p><b>Sector:</b> <span id="sector"></span></p>
 
 <script>
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
-fetch("datos.json")
+fetch("./datos.json")
   .then(res => res.json())
   .then(data => {
     const persona = data.find(p => p.id === id);
@@ -64,8 +32,11 @@ fetch("datos.json")
     } else {
       document.body.innerHTML = "<h2>No encontrado</h2>";
     }
+  })
+  .catch(err => {
+    document.body.innerHTML = "<h2>Error cargando datos</h2>";
   });
 </script>
 
 </body>
-</html>
+</html>  
