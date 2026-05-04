@@ -18,24 +18,19 @@
       padding: 20px;
       border-radius: 15px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      width: 320px;
       text-align: center;
-      width: 300px;
-    }
-
-    .card img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      margin-bottom: 10px;
     }
 
     .nombre {
       font-size: 22px;
       font-weight: bold;
+      margin-bottom: 10px;
     }
 
     .dato {
-      margin: 5px 0;
+      margin: 6px 0;
+      text-align: left;
     }
   </style>
 </head>
@@ -43,7 +38,6 @@
 <body>
 
 <div class="card">
-  <img id="foto" src="">
   <div class="nombre" id="nombre"></div>
 
   <div class="dato"><b>DNI:</b> <span id="dni"></span></div>
@@ -67,7 +61,6 @@ fetch("datos.json")
       document.getElementById("cuil").textContent = persona.cuil || "-";
       document.getElementById("telefono").textContent = persona.telefono || "-";
       document.getElementById("sector").textContent = persona.sector || "-";
-      document.getElementById("foto").src = persona.foto || "https://via.placeholder.com/120";
     } else {
       document.body.innerHTML = "<h2>No encontrado</h2>";
     }
